@@ -197,12 +197,86 @@ footer{background:#08101B;color:rgba(239,231,214,.6);padding-block:var(--space-1
 footer a{text-decoration:none}
 footer a:hover{color:var(--gold)}
 
+/* Agents orchestration */
+.agents{background:var(--ink);color:var(--stone);border-top:1px solid var(--line-dark)}
+.agents .lead{color:rgba(239,231,214,.72)}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.orch{--sc:rgba(239,231,214,.62);--bd:var(--line-dark);--ln:rgba(239,231,214,.22);margin-top:var(--space-12);display:grid;justify-items:center}
+.orch [data-state="think"]{--sc:var(--blue);--bd:var(--blue)}
+.orch [data-state="tool"]{--sc:var(--gold);--bd:var(--gold)}
+.orch [data-state="done"]{--sc:#8FD3A6;--bd:#8FD3A6}
+.orch-chip{display:flex;align-items:center;gap:var(--space-2);min-height:44px;max-width:100%;margin-bottom:var(--space-3);padding:var(--space-2) var(--space-4);border:1px dashed var(--line-dark);border-radius:999px;font-size:.95rem;opacity:.4;transition:opacity var(--transition-slow),border-color var(--transition-slow)}
+.orch-chip.on{opacity:1;border-color:var(--gold)}
+.orch-chip b{font:600 .72rem var(--font-mono);color:var(--gold);direction:ltr}
+.onode{width:100%;display:grid;gap:2px;justify-items:center;text-align:center;padding:var(--space-4) var(--space-6);border:1px solid var(--bd);border-radius:var(--radius);background:rgba(255,255,255,.03);transition:border-color var(--transition-slow),background var(--transition-slow)}
+.onode strong{font:700 1.25rem var(--font-display)}
+.onode-sub{font:400 .75rem var(--font-mono);color:var(--gold);direction:ltr;unicode-bidi:isolate}
+.ostatus{display:inline-flex;align-items:center;gap:var(--space-2);min-height:1.7em;font:500 .88rem var(--font-body);color:var(--sc)}
+.ostatus::before{content:"○";font-family:var(--font-mono)}
+[data-state="think"]>.ostatus::before,[data-state="think"] .ostatus::before{content:"◐";animation:spin 1s linear infinite}
+[data-state="tool"] .ostatus::before,[data-state="tool"]>.ostatus::before{content:"ƒ";font-weight:600}
+[data-state="done"] .ostatus::before,[data-state="done"]>.ostatus::before{content:"✓"}
+.orch [data-state]:not([data-state="wait"])>.onode,.onode[data-state]:not([data-state="wait"]){background:rgba(255,255,255,.06)}
+.orch-core{max-width:340px}
+.stem{width:1px;height:28px;background:var(--ln);transition:background var(--transition-slow)}
+.stem-in{display:none}
+.orch[data-out="1"] .stem-out{background:var(--gold)}
+.workers{position:relative;width:100%;display:grid;gap:var(--space-2)}
+.wcol{position:relative;display:grid;justify-items:center}
+.link{position:relative;width:1px;height:28px;background:var(--ln);transition:background var(--transition-slow)}
+.link i{position:absolute;inset-inline-start:-2px;top:0;width:5px;height:5px;border-radius:50%;background:var(--gold);opacity:0}
+.wcol:not([data-state="wait"]) .link{background:var(--sc)}
+.wcol[data-state="think"] .link i,.wcol[data-state="tool"] .link i{opacity:1;animation:flow 1s linear infinite}
+.orch-ans{max-width:560px}
+.oout{display:block;min-height:5em;margin-top:var(--space-2);color:var(--stone);font-size:1rem}
+.oout.typing::after{content:"";display:inline-block;width:7px;height:1em;margin-inline-start:3px;background:var(--gold);vertical-align:text-bottom;animation:blink 1s steps(1) infinite}
+@keyframes flow{to{transform:translateY(23px)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (min-width:640px){
+  .stem-in{display:block}
+  .workers{grid-template-columns:repeat(3,1fr);column-gap:var(--space-4);padding-bottom:24px}
+  .workers::before,.workers::after{content:"";position:absolute;inset-inline:calc((100% - var(--space-8))/6);height:1px;background:var(--ln)}
+  .workers::before{top:0}.workers::after{bottom:0}
+  .wcol::after{content:"";position:absolute;inset-inline-start:50%;top:100%;width:1px;height:24px;background:var(--ln)}
+  .oout{min-height:3.4em}
+}
+
+/* Roaming agent cursors (desktop only; fixed layer below the header) */
+.roam{display:none}
+@media (min-width:1024px) and (prefers-reduced-motion:no-preference){.roam{display:block}}
+.agent{--c:var(--gold);position:fixed;inset-block-start:0;inset-inline-start:0;z-index:40;pointer-events:none;direction:ltr;opacity:0;will-change:transform;transition:transform 1.5s cubic-bezier(.45,.05,.2,1),opacity .4s ease}
+.agent.on{opacity:1}
+.agent-research{--c:var(--gold)}.agent-rag{--c:var(--blue)}.agent-eval{--c:#8FD3A6}
+.agent-dot{display:block;width:14px;height:16px;background:var(--c);clip-path:polygon(0 0,100% 62%,56% 68%,32% 100%)}
+.agent-tag{position:absolute;inset-inline-start:14px;top:12px;white-space:nowrap;padding:2px 8px;border:1px solid var(--c);border-radius:999px;background:rgba(8,15,26,.9);color:var(--c);font:600 .68rem var(--font-mono)}
+.agent-bubble{position:absolute;inset-inline-start:14px;top:38px;white-space:nowrap;direction:rtl;padding:4px 10px;border-radius:var(--radius-sm);background:rgba(8,15,26,.92);border:1px solid var(--line-dark);color:var(--stone);font:400 .78rem var(--font-body);opacity:0;transform:translateY(-4px);transition:opacity var(--transition),transform var(--transition)}
+.agent.say .agent-bubble{opacity:1;transform:none}
+.agent-scan{outline:2px dashed var(--gold);outline-offset:6px;animation:scan 1s ease-in-out infinite alternate}
+@keyframes scan{from{outline-offset:4px}to{outline-offset:8px}}
+
+/* Live agent log */
+.agentlog{position:fixed;inset-inline-end:16px;inset-block-end:16px;z-index:45;width:min(400px,100% - 32px);display:flex;flex-direction:column-reverse;align-items:flex-end;gap:var(--space-2);pointer-events:none}
+.agentlog-toggle{pointer-events:auto;display:inline-flex;align-items:center;gap:var(--space-2);min-height:44px;padding:8px 16px;border:1px solid var(--line-dark);border-radius:999px;background:rgba(8,15,26,.92);color:var(--stone);font:500 .85rem var(--font-body);cursor:pointer;backdrop-filter:blur(6px);box-shadow:var(--shadow-lg);transition:border-color var(--transition)}
+.agentlog-toggle:hover{border-color:var(--gold)}
+.live-dot{width:8px;height:8px;border-radius:50%;background:#8FD3A6;animation:live 1.8s ease-out infinite}
+@keyframes live{0%{box-shadow:0 0 0 0 rgba(143,211,166,.6)}100%{box-shadow:0 0 0 8px rgba(143,211,166,0)}}
+.agentlog-count{padding:1px 8px;border-radius:999px;background:var(--ink-2);color:#8FD3A6;font:600 .75rem var(--font-mono)}
+.agentlog-body{pointer-events:auto;width:100%;height:calc(11.2em + 24px);padding:var(--space-3);display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;direction:ltr;text-align:left;font:400 .72rem/1.6 var(--font-mono);background:rgba(8,15,26,.82);border:1px solid var(--line-dark);border-radius:var(--radius);backdrop-filter:blur(6px);box-shadow:var(--shadow-lg)}
+.agentlog-body[hidden]{display:none}
+.ll{flex:none;white-space:pre;overflow:hidden;text-overflow:ellipsis;color:#C9D4E6}
+.ll.new{animation:linein .45s ease}
+@keyframes linein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.ll .t{color:#8795AB}
+.a-research{color:var(--gold)}.a-rag{color:#8FB2FF}.a-eval{color:#8FD3A6}
+.m-tool{color:var(--gold)}.m-done{color:#8FD3A6}.m-think{color:#8795AB}
+@media (min-width:640px){.agentlog-body{font-size:.76rem}}
+
 /* Reveal */
 @media (prefers-reduced-motion:no-preference){
   .reveal{opacity:0;transform:translateY(18px);transition:opacity 600ms ease,transform 600ms ease}
   .reveal.in{opacity:1;transform:none}
 }
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.cursor{animation:none}*{transition-duration:0ms}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.cursor,.live-dot,.link i,.oout.typing::after,[data-state] .ostatus::before{animation:none}*{transition-duration:0ms}}
 </style>
 </head>
 <body>
@@ -218,6 +292,7 @@ footer a:hover{color:var(--gold)}
       <ul class="nav-links">
         <li><a href="#why">למה אצלנו</a></li>
         <li><a href="#curriculum">תוכנית הלימודים</a></li>
+        <li><a href="#agents">סוכנים בפעולה</a></li>
         <li><a href="#audience">למי מתאים</a></li>
         <li><a href="#faculty">סגל</a></li>
         <li><a href="#faq">שאלות נפוצות</a></li>
@@ -229,6 +304,7 @@ footer a:hover{color:var(--gold)}
   <div class="mobile-menu" id="mobileMenu">
     <a href="#why">למה אצלנו</a>
     <a href="#curriculum">תוכנית הלימודים</a>
+    <a href="#agents">סוכנים בפעולה</a>
     <a href="#audience">למי מתאים</a>
     <a href="#faculty">סגל</a>
     <a href="#faq">שאלות נפוצות</a>
@@ -331,6 +407,35 @@ footer a:hover{color:var(--gold)}
     </div>
   </section>
 
+  <section class="agents" id="agents" aria-labelledby="agents-h">
+    <div class="container">
+      <span class="eyebrow reveal">סוכנים בפעולה</span>
+      <h2 class="reveal" id="agents-h">ככה נראה סוכן AI בעבודה</h2>
+      <p class="lead reveal">במודול 05 תבנו בדיוק מערכת כזו: מתזמר שמפרק שאלה למשימות, סוכנים מתמחים שקוראים לכלים, ושלב הערכה שמרכיב תשובה אחת אמינה.</p>
+      <p class="sr-only">תרשים מונפש: מתזמר מקבל שאילתה, מפזר משימות לשלושה סוכנים (מחקר, אחזור והערכה), ומרכיב מהם תשובה.</p>
+      <div class="orch reveal" id="orch" aria-hidden="true">
+        <div class="orch-chip" id="orchChip"><b>query ▸</b><span id="orchQ">איך בונים מערכת RAG?</span></div>
+        <div class="onode orch-core" id="orchCore" data-state="wait">
+          <span class="onode-sub">orchestrator</span><strong>מתזמר</strong><span class="ostatus">ממתין לשאילתה</span>
+        </div>
+        <div class="stem stem-in"></div>
+        <div class="workers">
+          <div class="wcol" data-state="wait"><span class="link"><i></i></span>
+            <div class="onode"><span class="onode-sub">research-agent</span><strong>סוכן מחקר</strong><span class="ostatus">ממתין</span></div></div>
+          <div class="wcol" data-state="wait"><span class="link"><i></i></span>
+            <div class="onode"><span class="onode-sub">rag-agent</span><strong>סוכן אחזור</strong><span class="ostatus">ממתין</span></div></div>
+          <div class="wcol" data-state="wait"><span class="link"><i></i></span>
+            <div class="onode"><span class="onode-sub">eval-agent</span><strong>סוכן הערכה</strong><span class="ostatus">ממתין</span></div></div>
+        </div>
+        <div class="stem stem-out"></div>
+        <div class="onode orch-ans" id="orchAnswer" data-state="wait">
+          <span class="onode-sub">answer</span><strong>תשובה</strong><span class="ostatus">ממתין</span>
+          <span class="oout" id="orchOut"></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section id="audience">
     <div class="container">
       <span class="eyebrow reveal">למי מתאים</span>
@@ -423,6 +528,13 @@ footer a:hover{color:var(--gold)}
   </div>
 </footer>
 
+<div class="roam" id="roam" aria-hidden="true"></div>
+
+<aside class="agentlog" id="agentLog" aria-label="פעילות סוכנים">
+  <button type="button" class="agentlog-toggle" id="logToggle" aria-expanded="false" aria-controls="logBody"><span class="live-dot" aria-hidden="true"></span><span>סוכנים פעילים</span><span class="agentlog-count">3</span></button>
+  <div class="agentlog-body" id="logBody" role="log" aria-live="off" aria-label="יומן פעילות סוכנים" dir="ltr" hidden></div>
+</aside>
+
 <script>
 (() => {
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -442,14 +554,15 @@ footer a:hover{color:var(--gold)}
   // Neural network canvas
   const canvas = document.getElementById('neural');
   const ctx = canvas.getContext('2d');
-  let nodes = [], w, h, dpr;
+  let nodes = [], packets = [], w, h, dpr;
   const resize = () => {
     dpr = Math.min(window.devicePixelRatio || 1, 2);
     w = canvas.offsetWidth; h = canvas.offsetHeight;
     canvas.width = w * dpr; canvas.height = h * dpr;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     const count = Math.round(Math.min(90, w * h / 16000));
-    nodes = Array.from({length: count}, () => ({x: Math.random()*w, y: Math.random()*h, vx: (Math.random()-.5)*.3, vy: (Math.random()-.5)*.3, r: Math.random()*1.6+.6}));
+    nodes = Array.from({length: count}, () => ({x: Math.random()*w, y: Math.random()*h, vx: (Math.random()-.5)*.3, vy: (Math.random()-.5)*.3, r: Math.random()*1.6+.6, pulse: 0}));
+    packets = [];
   };
   const draw = () => {
     ctx.clearRect(0, 0, w, h);
@@ -460,15 +573,49 @@ footer a:hover{color:var(--gold)}
         if (d < 130) { ctx.strokeStyle = `rgba(201,162,74,${(1-d/130)*.35})`; ctx.lineWidth = .7; ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke(); }
       }
       ctx.fillStyle = 'rgba(239,231,214,.8)'; ctx.beginPath(); ctx.arc(a.x, a.y, a.r, 0, Math.PI*2); ctx.fill();
+      if (a.pulse > 0) { ctx.strokeStyle = `rgba(243,213,138,${a.pulse*.8})`; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(a.x, a.y, a.r+2+(1-a.pulse)*10, 0, Math.PI*2); ctx.stroke(); }
     }
+    packets.forEach(p => { // gold message packets travelling along edges
+      const x = p.a.x+(p.b.x-p.a.x)*p.t, y = p.a.y+(p.b.y-p.a.y)*p.t;
+      ctx.fillStyle = 'rgba(201,162,74,.3)'; ctx.beginPath(); ctx.arc(x, y, 6, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#F3D58A'; ctx.beginPath(); ctx.arc(x, y, 2.2, 0, Math.PI*2); ctx.fill();
+    });
   };
-  const tick = () => {
+  // Packets: hop A -> B (<130px apart), then maybe on to a neighbour of B (max 3 hops, max 8 live)
+  const near = (n, skip) => nodes.filter(m => m !== n && m !== skip && Math.hypot(m.x-n.x, m.y-n.y) < 130);
+  const pick = list => list[Math.floor(Math.random() * list.length)];
+  let spawnIn = 600;
+  const stepPackets = dt => {
+    nodes.forEach(n => { if (n.pulse > 0) n.pulse = Math.max(0, n.pulse - dt/500); });
+    spawnIn -= dt;
+    if (spawnIn <= 0) {
+      spawnIn = 300 + Math.random()*700;
+      const a = packets.length < 8 && pick(nodes), nb = a ? near(a) : [];
+      if (nb.length) packets.push({a, b: pick(nb), t: 0, hops: 1});
+    }
+    packets = packets.filter(p => {
+      p.t += dt/1000;
+      if (p.t < 1) return true;
+      p.b.pulse = 1;
+      const nb = p.hops < 3 && Math.random() < .65 ? near(p.b, p.a) : [];
+      if (!nb.length) return false;
+      p.a = p.b; p.b = pick(nb); p.t = 0; p.hops++;
+      return true;
+    });
+  };
+  let raf, last = 0;
+  const tick = ts => {
+    const dt = Math.min(50, last ? ts - last : 16); last = ts;
     nodes.forEach(n => { n.x += n.vx; n.y += n.vy; if (n.x<0||n.x>w) n.vx*=-1; if (n.y<0||n.y>h) n.vy*=-1; });
-    draw(); requestAnimationFrame(tick);
+    stepPackets(dt); draw(); raf = requestAnimationFrame(tick);
   };
   window.addEventListener('resize', resize);
   resize();
-  if (reduced) draw(); else tick();
+  if (reduced) draw(); else raf = requestAnimationFrame(tick);
+  document.addEventListener('visibilitychange', () => { // pause canvas while the tab is hidden
+    if (reduced) return;
+    if (document.hidden) cancelAnimationFrame(raf); else { last = 0; raf = requestAnimationFrame(tick); }
+  });
 
   // Typed terminal
   const code = [
@@ -504,6 +651,205 @@ footer a:hover{color:var(--gold)}
   // Reveal on scroll
   const io = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), {threshold: .12});
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // Agent log panel + roaming agents share this data
+  const AG = {
+    research: {name: 'research-agent', say: [['סורק תוכן…', '…', 'scan'], ['קורא לכלי search()', '→', 'search'], ['מסכם…', '…', 'summarize']]},
+    rag: {name: 'rag-agent', say: [['מאחזר הקשר…', '…', 'retrieve'], ['קורא לכלי retrieve()', '→', 'retrieve'], ['מחשב embeddings…', '…', 'embed']]},
+    eval: {name: 'eval-agent', say: [['מריץ הערכה…', '…', 'evaluate'], ['בודק איכות…', '…', 'grade'], ['קורא לכלי run_evals()', '→', 'run_evals']]}
+  };
+  const rnd = (a, b) => a + Math.random() * (b - a);
+  const oneOf = list => list[Math.floor(Math.random() * list.length)];
+
+  // Live agent activity log
+  const logBox = document.getElementById('logBody');
+  const logBtn = document.getElementById('logToggle');
+  const LINES = { // [agent, symbol, text|result]; per section
+    top: [['research-agent', '→', 'scan(page="hero")|✓ 6 blocks'], ['rag-agent', '…', 'embedding query…'], ['eval-agent', '→', 'check_links()|✓ ok'], ['research-agent', '…', 'planning next step…']],
+    why: [['research-agent', '→', 'search("סגל אקדמי")|✓ 3 hits'], ['rag-agent', '→', 'retrieve(query="למה אצלנו")|✓ 4 docs'], ['eval-agent', '…', 'scoring relevance…'], ['research-agent', '→', 'summarize(cards=4)|✓ done']],
+    curriculum: [['rag-agent', '→', 'retrieve(query="מודול RAG")|✓ 4 docs'], ['research-agent', '→', 'read_syllabus(modules=6)|✓ ok'], ['eval-agent', '→', 'run_evals(suite="syllabus")|✓ pass'], ['rag-agent', '…', 'reranking chunks…']],
+    agents: [['research-agent', '→', 'plan(task="answer query")|✓ 3 steps'], ['rag-agent', '→', 'retrieve(top_k=5)|✓ 5 docs'], ['eval-agent', '→', 'grade(answer)|✓ pass'], ['research-agent', '…', 'orchestrating workers…']],
+    audience: [['research-agent', '→', 'search("מפתחי תוכנה")|✓ 2 hits'], ['rag-agent', '…', 'matching profiles…'], ['eval-agent', '→', 'score(fit)|✓ ok']],
+    details: [['research-agent', '→', 'read_fields(count=4)|✓ ok'], ['eval-agent', '→', 'check_placeholders()|✓ 5 open'], ['rag-agent', '…', 'indexing details…']],
+    faculty: [['research-agent', '→', 'list_people()|✓ 4 entries'], ['rag-agent', '…', 'fetching bios…'], ['eval-agent', '→', 'verify(profile)|✓ ok']],
+    faq: [['rag-agent', '→', 'retrieve(query="תעודה")|✓ 2 docs'], ['research-agent', '→', 'search("מימון")|✓ 1 hit'], ['eval-agent', '…', 'grading answers…']],
+    apply: [['eval-agent', '→', 'validate(form)|✓ ready'], ['research-agent', '…', 'waiting for input…'], ['rag-agent', '→', 'prefetch(crm)|✓ ok']]
+  };
+  const SYM = {'→': 'm-tool', '✓': 'm-done', '…': 'm-think'};
+  const pad2 = n => String(n).padStart(2, '0');
+  const stamp = () => { const d = new Date(); return `${pad2(d.getHours())}:${pad2(d.getMinutes())}:${pad2(d.getSeconds())}`; };
+  let logOpen = false, curSec = 'top', lastLine = null, logTimer = 0;
+  const pushLog = (name, sym, text, animate = true) => {
+    if (!logOpen) return;
+    const [call, res] = text.split('|');
+    const row = document.createElement('div');
+    row.className = 'a-row ll' + (animate && !reduced ? ' new' : '');
+    const part = (cls, txt) => { const s = document.createElement('span'); s.className = cls; s.textContent = txt + '  '; row.append(s); };
+    part('t', stamp()); part('a-' + name.split('-')[0], name.padEnd(14)); part(SYM[sym], `${sym} ${call}`); if (res) part('m-done', res);
+    logBox.append(row);
+    while (logBox.children.length > 7) logBox.firstChild.remove();
+  };
+  const fillLog = () => LINES.top.forEach(l => pushLog(...l, false));
+  const streamLog = () => {
+    clearTimeout(logTimer);
+    if (reduced || document.hidden) return;
+    logTimer = setTimeout(() => {
+      const list = LINES[curSec] || LINES.top;
+      let l = oneOf(list); if (l === lastLine && list.length > 1) l = oneOf(list);
+      lastLine = l; pushLog(...l); streamLog();
+    }, rnd(1500, 3000));
+  };
+  const setLog = (open, save) => {
+    logOpen = open; logBox.hidden = !open; logBtn.setAttribute('aria-expanded', open);
+    if (open && !logBox.children.length) fillLog();
+    if (save) try { localStorage.setItem('agentlog-open', open ? '1' : '0'); } catch (e) {}
+  };
+  let stored = null;
+  try { stored = localStorage.getItem('agentlog-open'); } catch (e) {}
+  setLog(stored === null ? window.innerWidth >= 640 : stored === '1', false);
+  logBtn.addEventListener('click', () => setLog(!logOpen, true));
+  if (!reduced) {
+    streamLog();
+    // Track the section most in view to pick matching log lines
+    const vis = {};
+    const secIo = new IntersectionObserver(es => {
+      es.forEach(e => { vis[e.target.id] = e.isIntersecting ? e.intersectionRect.height : 0; });
+      curSec = Object.keys(vis).reduce((b, k) => vis[k] > (vis[b] || 0) ? k : b, curSec);
+    }, {threshold: [0, .1, .25, .5, .75, 1]});
+    ['top', 'why', 'curriculum', 'agents', 'audience', 'details', 'faculty', 'faq', 'apply'].forEach(id => secIo.observe(document.getElementById(id)));
+  }
+
+  // Roaming agent cursors (desktop only)
+  if (!reduced) {
+    const roam = document.getElementById('roam');
+    const mq = window.matchMedia('(min-width:1024px)');
+    const targets = [...document.querySelectorAll('main h2, .card, .module, .detail, .person, .faq details')];
+    const claimed = new Set(), agents = [];
+    let roamOn = false, followRaf = 0;
+    const mkAgent = key => {
+      const el = document.createElement('div'), dot = document.createElement('i'), tag = document.createElement('span'), bub = document.createElement('span');
+      el.className = 'agent agent-' + key; dot.className = 'agent-dot'; tag.className = 'agent-tag'; bub.className = 'agent-bubble';
+      tag.textContent = AG[key].name;
+      el.append(dot, tag, bub); roam.append(el);
+      return {key, el, bub, t: 0, next: null, target: null, scanning: false};
+    };
+    const sched = (a, fn, ms) => { a.next = fn; clearTimeout(a.t); a.t = setTimeout(fn, ms); };
+    const place = (a, [x, y], ms) => { a.el.style.transitionDuration = ms + 'ms, 400ms'; a.el.style.transform = `translate(${x}px,${y}px)`; };
+    // Target top corner (inline-start side in RTL), clamped to the viewport
+    const spot = el => { const r = el.getBoundingClientRect(); return [Math.min(Math.max(r.right - 36, 8), innerWidth - 190), Math.min(Math.max(r.top + 10, 84), innerHeight - 90)]; };
+    const usable = el => {
+      if (el.classList.contains('reveal') && !el.classList.contains('in')) return false;
+      const r = el.getBoundingClientRect();
+      return r.width > 0 && r.top >= 84 && r.top <= innerHeight - 90;
+    };
+    const offscreen = el => { const r = el.getBoundingClientRect(); return r.bottom < 60 || r.top > innerHeight - 40; };
+    const labelOf = el => (el.matches('h2') ? el : el.querySelector('h3,.module-title,dt,summary') || el).textContent.trim().replace(/\s+/g, ' ').slice(0, 20);
+    const release = a => {
+      if (a.target) { a.target.classList.remove('agent-scan'); claimed.delete(a.target); a.target = null; }
+      a.scanning = false; a.el.classList.remove('say');
+    };
+    const leave = a => { release(a); sched(a, () => goNext(a), rnd(1000, 3000)); };
+    const arrive = a => {
+      if (offscreen(a.target)) { release(a); return sched(a, () => goNext(a), 400); }
+      const [txt, sym, call] = oneOf(AG[a.key].say);
+      a.target.classList.add('agent-scan'); a.scanning = true;
+      a.bub.textContent = txt; a.el.classList.add('say');
+      pushLog(AG[a.key].name, sym, `${call}(target="${labelOf(a.target)}")`);
+      sched(a, () => leave(a), 2000);
+    };
+    const goNext = a => {
+      const pool = targets.filter(el => !claimed.has(el) && usable(el));
+      if (!pool.length) return sched(a, () => goNext(a), 1500);
+      a.target = oneOf(pool); claimed.add(a.target);
+      const ms = rnd(1200, 1800);
+      place(a, spot(a.target), ms);
+      sched(a, () => arrive(a), ms + 100);
+    };
+    // Keep scanning agents attached to their target on scroll/resize
+    const follow = () => {
+      followRaf = 0;
+      agents.forEach(a => {
+        if (!a.scanning) return;
+        if (offscreen(a.target)) leave(a); else place(a, spot(a.target), 250);
+      });
+    };
+    const onMove = () => { if (roamOn && !followRaf) followRaf = requestAnimationFrame(follow); };
+    window.addEventListener('scroll', onMove, {passive: true});
+    window.addEventListener('resize', onMove);
+    const startRoam = () => {
+      if (roamOn) return; roamOn = true;
+      if (!agents.length) Object.keys(AG).forEach(k => agents.push(mkAgent(k)));
+      agents.forEach((a, i) => {
+        place(a, [innerWidth * (.3 + .2 * i), innerHeight * .5], 0);
+        void a.el.offsetWidth; a.el.classList.add('on');
+        sched(a, () => goNext(a), 1200 + i * 900);
+      });
+    };
+    const stopRoam = () => { roamOn = false; agents.forEach(a => { clearTimeout(a.t); release(a); a.el.classList.remove('on'); }); };
+    const syncRoam = () => mq.matches ? startRoam() : stopRoam();
+    mq.addEventListener('change', syncRoam); syncRoam();
+    document.addEventListener('visibilitychange', () => {
+      if (!roamOn) return;
+      agents.forEach(a => { if (document.hidden) clearTimeout(a.t); else if (a.next) sched(a, a.next, 400); });
+    });
+  }
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) streamLog(); else clearTimeout(logTimer); });
+
+  // Orchestration diagram (#agents)
+  const orch = document.getElementById('orch');
+  if (orch) {
+    const core = document.getElementById('orchCore'), chip = document.getElementById('orchChip'), qEl = document.getElementById('orchQ');
+    const out = document.getElementById('orchOut'), ans = document.getElementById('orchAnswer');
+    const cols = [...orch.querySelectorAll('.wcol')];
+    const QS = [
+      {q: 'איך בונים מערכת RAG?', a: 'מפצלים את המסמכים לקטעים, מחשבים embeddings, שולפים הקשר רלוונטי ומעריכים את התשובה.'},
+      {q: 'איך מעריכים סוכן AI?', a: 'מגדירים מדדי הצלחה, מריצים סט בדיקות קבוע ומשווים בין גרסאות.'},
+      {q: 'מתי כדאי לעשות fine-tuning?', a: 'כשפרומפט ו-RAG כבר לא מספיקים ויש נתוני אימון איכותיים.'}
+    ];
+    const ST = {wait: 'ממתין', think: 'חושב…', tool: 'קורא לכלי', done: 'הושלם'};
+    const setS = (node, s, txt) => { node.dataset.state = s; node.querySelector('.ostatus').textContent = txt || ST[s]; };
+    const finish = i => { // completed state (also the reduced-motion view)
+      qEl.textContent = QS[i].q; chip.classList.add('on'); out.textContent = QS[i].a; orch.dataset.out = '1';
+      cols.forEach(c => setS(c, 'done')); setS(core, 'done'); setS(ans, 'done', 'נשלחה');
+    };
+    // One cycle = timed events [ms, fn]; converted to relative delays so it can pause/resume
+    const events = i => {
+      const {q, a} = QS[i], words = a.split(' '), ev = [], at = (t, fn) => ev.push([t, fn]);
+      at(0, () => { cols.forEach(c => setS(c, 'wait')); setS(core, 'wait', 'ממתין לשאילתה'); setS(ans, 'wait'); out.textContent = ''; out.classList.remove('typing'); orch.dataset.out = '0'; chip.classList.remove('on'); });
+      at(500, () => { qEl.textContent = q; chip.classList.add('on'); });
+      at(1300, () => setS(core, 'think', 'מתכנן…'));
+      at(2300, () => setS(core, 'tool', 'מפזר משימות'));
+      cols.forEach((c, k) => {
+        at(2400 + k * 250, () => setS(c, 'think'));
+        at(3500 + k * 350, () => setS(c, 'tool'));
+        at(4800 + k * 450, () => setS(c, 'done'));
+      });
+      at(5900, () => { setS(core, 'think', 'מרכיב תשובה…'); setS(ans, 'think', 'כותב…'); out.classList.add('typing'); orch.dataset.out = '1'; });
+      words.forEach((_, k) => at(6300 + k * 110, () => { out.textContent = words.slice(0, k + 1).join(' '); }));
+      const end = 6300 + words.length * 110;
+      at(end + 200, () => { setS(core, 'done'); setS(ans, 'done', 'נשלחה'); out.classList.remove('typing'); });
+      at(end + 3500, () => {}); // hold ~3s on the finished answer
+      ev.sort((x, y) => x[0] - y[0]);
+      let prev = 0;
+      return ev.map(([t, fn]) => { const s = [t - prev, fn]; prev = t; return s; });
+    };
+    if (reduced) finish(0);
+    else {
+      let qi = 0, steps = events(0), si = 0, timer = 0, inView = false;
+      const run = () => {
+        clearTimeout(timer);
+        if (!inView || document.hidden) return;
+        const [d, fn] = steps[si];
+        timer = setTimeout(() => {
+          fn();
+          if (++si >= steps.length) { qi = (qi + 1) % QS.length; steps = events(qi); si = 0; }
+          run();
+        }, d);
+      };
+      new IntersectionObserver(([e]) => { inView = e.isIntersecting; run(); }, {threshold: .25}).observe(orch);
+      document.addEventListener('visibilitychange', run);
+    }
+  }
 
   // Lead form
   const form = document.getElementById('leadForm');
