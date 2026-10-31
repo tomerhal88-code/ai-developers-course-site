@@ -1,0 +1,543 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>קורס מפתחי AI | האוניברסיטה העברית</title>
+<meta name="description" content="תוכנית הכשרה מעשית למפתחי בינה מלאכותית – מודלי שפה, סוכנים, RAG והטמעה בייצור.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@500;700;900&family=Heebo:wght@300;400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0C1726;
+  --ink-2:#13233A;
+  --stone:#EFE7D6;
+  --stone-2:#F8F4EC;
+  --gold:#C9A24A;
+  --blue:#5B8CFF;
+  --text:#1A1D23;
+  --muted:#5D6675;
+  --line:rgba(12,23,38,.12);
+  --line-dark:rgba(239,231,214,.14);
+
+  --space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-6:24px;--space-8:32px;--space-12:48px;--space-16:64px;--space-24:96px;
+  --radius:14px;--radius-sm:8px;--radius-lg:24px;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.08);
+  --shadow-md:0 6px 20px rgba(12,23,38,.10);
+  --shadow-lg:0 20px 50px rgba(12,23,38,.22);
+  --transition:180ms ease;--transition-slow:320ms ease;
+
+  --font-display:"Frank Ruhl Libre",serif;
+  --font-body:"Heebo",system-ui,sans-serif;
+  --font-mono:"JetBrains Mono",monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-body);color:var(--text);background:var(--stone-2);line-height:1.7;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img,svg,canvas{display:block;max-width:100%}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--blue);outline-offset:3px;border-radius:4px}
+.container{width:min(1180px,100% - 32px);margin-inline:auto}
+.skip{position:absolute;inset-inline-start:16px;top:-60px;background:var(--gold);color:var(--ink);padding:10px 16px;border-radius:var(--radius-sm);z-index:100;font-weight:700;text-decoration:none}
+.skip:focus{top:12px}
+.eyebrow{font-family:var(--font-mono);font-size:.8rem;letter-spacing:.08em;color:var(--gold);display:inline-flex;align-items:center;gap:var(--space-2)}
+.eyebrow::before{content:"";width:22px;height:1px;background:currentColor}
+h1,h2,h3{font-family:var(--font-display);line-height:1.15;font-weight:700}
+h2{font-size:clamp(2rem,4.5vw,3rem);margin-block:var(--space-3) var(--space-4)}
+.lead{font-size:1.125rem;color:var(--muted);max-width:60ch}
+section{padding-block:var(--space-24)}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:var(--space-2);padding:14px 26px;border-radius:999px;font:600 1rem var(--font-body);text-decoration:none;border:1px solid transparent;cursor:pointer;transition:transform var(--transition),background var(--transition),color var(--transition),box-shadow var(--transition)}
+.btn-primary{background:var(--gold);color:var(--ink)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(201,162,74,.35)}
+.btn-ghost{border-color:var(--line-dark);color:var(--stone)}
+.btn-ghost:hover{background:rgba(239,231,214,.08)}
+
+/* Header */
+.site-header{position:fixed;inset-inline:0;top:0;z-index:50;transition:background var(--transition-slow),box-shadow var(--transition-slow)}
+.site-header.scrolled{background:rgba(12,23,38,.92);backdrop-filter:blur(12px);box-shadow:0 1px 0 var(--line-dark)}
+.nav{display:flex;align-items:center;justify-content:space-between;height:72px;color:var(--stone)}
+.brand{display:flex;align-items:center;gap:var(--space-3);text-decoration:none}
+.brand-mark{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--gold),#8E6F27);display:grid;place-items:center;font:700 1rem var(--font-mono);color:var(--ink)}
+.brand-text{line-height:1.2}
+.brand-text strong{display:block;font-family:var(--font-display);font-size:1.05rem}
+.brand-text span{font-size:.75rem;opacity:.7}
+.nav-links{display:none;gap:var(--space-8);list-style:none}
+.nav-links a{text-decoration:none;font-size:.95rem;opacity:.85;transition:opacity var(--transition)}
+.nav-links a:hover{opacity:1;color:var(--gold)}
+.nav .btn{padding:10px 20px;font-size:.9rem}
+.menu-toggle{background:none;border:1px solid var(--line-dark);color:var(--stone);border-radius:10px;width:42px;height:42px;cursor:pointer;font-size:1.2rem}
+.mobile-menu{display:none;background:var(--ink);border-top:1px solid var(--line-dark);padding:var(--space-4) 16px var(--space-6)}
+.mobile-menu.open{display:block}
+.mobile-menu a{display:block;color:var(--stone);text-decoration:none;padding:var(--space-3) 0;border-bottom:1px solid var(--line-dark)}
+.nav-cta{display:none}
+@media (min-width:1024px){.nav-links{display:flex}.menu-toggle{display:none}.nav-cta{display:inline-flex}.mobile-menu.open{display:none}}
+
+/* Hero */
+.hero{position:relative;min-height:100svh;background:radial-gradient(ellipse at 20% 0%,#1D3557 0%,var(--ink) 60%);color:var(--stone);display:flex;align-items:center;padding-block:120px var(--space-16);overflow:hidden}
+#neural{position:absolute;inset:0;width:100%;height:100%;opacity:.55}
+.hero::after{content:"";position:absolute;inset:auto 0 0 0;height:160px;background:linear-gradient(transparent,var(--ink))}
+.hero-inner{position:relative;z-index:2;display:grid;gap:var(--space-12)}
+.hero h1{font-size:clamp(2.6rem,7vw,5.2rem);font-weight:900;letter-spacing:-.01em;margin-block:var(--space-4) var(--space-6)}
+.hero h1 em{font-style:normal;color:var(--gold);position:relative}
+.hero p{font-size:clamp(1.05rem,2vw,1.3rem);color:rgba(239,231,214,.78);max-width:56ch}
+.hero-actions{display:flex;flex-wrap:wrap;gap:var(--space-3);margin-top:var(--space-8)}
+.terminal{background:rgba(8,15,26,.75);border:1px solid var(--line-dark);border-radius:var(--radius);padding:var(--space-4) var(--space-6) var(--space-6);font-family:var(--font-mono);font-size:.85rem;direction:ltr;text-align:left;box-shadow:var(--shadow-lg);backdrop-filter:blur(6px);max-width:520px}
+.terminal-dots{display:flex;gap:6px;margin-bottom:var(--space-4)}
+.terminal-dots i{width:10px;height:10px;border-radius:50%;background:#3A4A61}
+.terminal-dots i:first-child{background:var(--gold)}
+.terminal code{white-space:pre-wrap;color:#C9D4E6;display:block;min-height:9.5em}
+.terminal .k{color:var(--gold)}.terminal .s{color:#8FD3A6}.terminal .c{color:#6C7B92}
+.cursor{display:inline-block;width:8px;height:1em;background:var(--gold);vertical-align:text-bottom;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+@media (min-width:1024px){.hero-inner{grid-template-columns:1.25fr 1fr;align-items:center}}
+
+/* Stats */
+.stats{background:var(--ink);color:var(--stone);padding-block:0 var(--space-16)}
+.stats-grid{display:grid;grid-template-columns:repeat(2,1fr);border:1px solid var(--line-dark);border-radius:var(--radius-lg);overflow:hidden}
+.stat{padding:var(--space-8) var(--space-6);border-inline-start:1px solid var(--line-dark);border-top:1px solid var(--line-dark)}
+.stat:nth-child(-n+2){border-top:0}
+.stat:nth-child(odd){border-inline-start:0}
+.stat strong{display:block;font:700 clamp(2rem,5vw,3rem)/1 var(--font-display);color:var(--gold)}
+.stat span{font-size:.95rem;opacity:.75}
+@media (min-width:1024px){.stats-grid{grid-template-columns:repeat(4,1fr)}.stat{border-top:0}.stat:nth-child(odd){border-inline-start:1px solid var(--line-dark)}.stat:first-child{border-inline-start:0}}
+
+/* Why */
+.why-grid{display:grid;gap:var(--space-6);margin-top:var(--space-12)}
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:var(--space-8);transition:transform var(--transition-slow),box-shadow var(--transition-slow)}
+.card:hover{transform:translateY(-4px);box-shadow:var(--shadow-md)}
+.card-icon{width:48px;height:48px;border-radius:12px;background:var(--ink);color:var(--gold);display:grid;place-items:center;margin-bottom:var(--space-6)}
+.card h3{font-size:1.4rem;margin-bottom:var(--space-2)}
+.card p{color:var(--muted)}
+@media (min-width:640px){.why-grid{grid-template-columns:repeat(2,1fr)}}
+@media (min-width:1024px){.why-grid{grid-template-columns:repeat(4,1fr)}}
+
+/* Curriculum */
+.curriculum{background:var(--stone)}
+.curr-layout{display:grid;gap:var(--space-12)}
+@media (min-width:1024px){.curr-layout{grid-template-columns:1fr 1.6fr}.curr-intro{position:sticky;top:110px;align-self:start}}
+.modules{list-style:none;display:grid;gap:var(--space-3)}
+.module{background:var(--stone-2);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.module button{all:unset;box-sizing:border-box;width:100%;display:grid;grid-template-columns:auto 1fr auto;gap:var(--space-4);align-items:center;padding:var(--space-6);cursor:pointer}
+.module button:focus-visible{outline:3px solid var(--blue);outline-offset:-3px}
+.module-num{font:600 .85rem var(--font-mono);color:var(--gold);background:var(--ink);border-radius:8px;padding:6px 10px}
+.module-title{font:700 1.2rem var(--font-display)}
+.module-weeks{display:block;font:400 .8rem var(--font-body);color:var(--muted)}
+.module-chev{transition:transform var(--transition-slow);color:var(--muted)}
+.module[data-open="true"] .module-chev{transform:rotate(180deg)}
+.module-body{display:grid;grid-template-rows:0fr;transition:grid-template-rows var(--transition-slow)}
+.module[data-open="true"] .module-body{grid-template-rows:1fr}
+.module-body>div{overflow:hidden}
+.module-body p{padding:0 var(--space-6) var(--space-3);color:var(--muted)}
+.tags{display:flex;flex-wrap:wrap;gap:var(--space-2);padding:0 var(--space-6) var(--space-6)}
+.tag{font:400 .78rem var(--font-mono);background:#fff;border:1px solid var(--line);border-radius:999px;padding:4px 12px;direction:ltr}
+
+/* Audience */
+.aud-grid{display:grid;gap:var(--space-6);margin-top:var(--space-12)}
+.aud{display:flex;gap:var(--space-4);padding:var(--space-6) 0;border-top:1px solid var(--line)}
+.aud-check{flex:none;width:28px;height:28px;border-radius:50%;background:var(--gold);color:var(--ink);display:grid;place-items:center;font-weight:700}
+.aud h3{font-size:1.2rem;margin-bottom:var(--space-1)}
+.aud p{color:var(--muted)}
+@media (min-width:640px){.aud-grid{grid-template-columns:repeat(2,1fr);column-gap:var(--space-12)}}
+
+/* Details */
+.details{background:var(--ink);color:var(--stone)}
+.details .lead{color:rgba(239,231,214,.7)}
+.details-grid{display:grid;gap:var(--space-4);margin-top:var(--space-12)}
+.detail{border:1px solid var(--line-dark);border-radius:var(--radius);padding:var(--space-6);background:rgba(255,255,255,.02)}
+.detail dt{font:400 .8rem var(--font-mono);color:var(--gold);margin-bottom:var(--space-2)}
+.detail dd{font:700 1.35rem var(--font-display)}
+.detail dd small{display:block;font:400 .9rem var(--font-body);opacity:.65;margin-top:var(--space-1)}
+@media (min-width:640px){.details-grid{grid-template-columns:repeat(2,1fr)}}
+@media (min-width:1024px){.details-grid{grid-template-columns:repeat(4,1fr)}}
+
+/* Faculty */
+.faculty-grid{display:grid;gap:var(--space-6);margin-top:var(--space-12)}
+.person{text-align:center}
+.avatar{aspect-ratio:1;border-radius:var(--radius-lg);background:linear-gradient(160deg,var(--ink-2),var(--ink));display:grid;place-items:center;color:var(--gold);font:700 2.5rem var(--font-display);margin-bottom:var(--space-4)}
+.person h3{font-size:1.2rem}
+.person p{color:var(--muted);font-size:.95rem}
+@media (min-width:640px){.faculty-grid{grid-template-columns:repeat(2,1fr)}}
+@media (min-width:1024px){.faculty-grid{grid-template-columns:repeat(4,1fr)}}
+
+/* FAQ */
+.faq{background:var(--stone)}
+.faq-list{max-width:820px;margin:var(--space-12) auto 0}
+.faq details{border-bottom:1px solid var(--line);padding-block:var(--space-6)}
+.faq summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:var(--space-4);font:700 1.2rem var(--font-display)}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";font-family:var(--font-mono);color:var(--gold);transition:transform var(--transition)}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq details p{color:var(--muted);margin-top:var(--space-3)}
+
+/* Apply */
+.apply{background:radial-gradient(ellipse at 80% 100%,#1D3557,var(--ink) 65%);color:var(--stone)}
+.apply-layout{display:grid;gap:var(--space-12);align-items:start}
+@media (min-width:1024px){.apply-layout{grid-template-columns:1fr 1fr}}
+.apply .lead{color:rgba(239,231,214,.72)}
+form{background:var(--stone-2);color:var(--text);border-radius:var(--radius-lg);padding:var(--space-8);box-shadow:var(--shadow-lg);display:grid;gap:var(--space-4)}
+.field{display:grid;gap:var(--space-1)}
+.field label{font-weight:500;font-size:.95rem}
+.field input,.field select{font:inherit;padding:12px 14px;border:1px solid var(--line);border-radius:var(--radius-sm);background:#fff;transition:border-color var(--transition)}
+.field input:focus,.field select:focus{border-color:var(--blue);outline:none;box-shadow:0 0 0 3px rgba(91,140,255,.25)}
+.field[data-invalid="true"] input,.field[data-invalid="true"] select{border-color:#C0392B}
+.error{color:#C0392B;font-size:.85rem;min-height:1.2em}
+.consent{display:flex;gap:var(--space-2);font-size:.85rem;color:var(--muted);align-items:flex-start}
+form .btn-primary{justify-content:center;width:100%}
+.btn[aria-busy="true"]{opacity:.7;pointer-events:none}
+.form-success{display:none;text-align:center;padding:var(--space-8) 0}
+.form-success.show{display:block}
+.form-success strong{display:block;font:700 1.6rem var(--font-display);margin-bottom:var(--space-2)}
+
+/* Footer */
+footer{background:#08101B;color:rgba(239,231,214,.6);padding-block:var(--space-12);font-size:.9rem}
+.footer-inner{display:flex;flex-wrap:wrap;justify-content:space-between;gap:var(--space-6)}
+footer a{text-decoration:none}
+footer a:hover{color:var(--gold)}
+
+/* Reveal */
+@media (prefers-reduced-motion:no-preference){
+  .reveal{opacity:0;transform:translateY(18px);transition:opacity 600ms ease,transform 600ms ease}
+  .reveal.in{opacity:1;transform:none}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.cursor{animation:none}*{transition-duration:0ms}}
+</style>
+</head>
+<body>
+<a href="#main" class="skip">דלג לתוכן</a>
+
+<header class="site-header" id="header">
+  <div class="container nav">
+    <a href="#top" class="brand" aria-label="דף הבית">
+      <span class="brand-mark" aria-hidden="true">AI</span>
+      <span class="brand-text"><strong>מפתחי AI</strong><span>האוניברסיטה העברית בירושלים</span></span>
+    </a>
+    <nav aria-label="ניווט ראשי">
+      <ul class="nav-links">
+        <li><a href="#why">למה אצלנו</a></li>
+        <li><a href="#curriculum">תוכנית הלימודים</a></li>
+        <li><a href="#audience">למי מתאים</a></li>
+        <li><a href="#faculty">סגל</a></li>
+        <li><a href="#faq">שאלות נפוצות</a></li>
+      </ul>
+    </nav>
+    <a href="#apply" class="btn btn-primary nav-cta">להרשמה</a>
+    <button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-controls="mobileMenu" aria-label="פתיחת תפריט">☰</button>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#why">למה אצלנו</a>
+    <a href="#curriculum">תוכנית הלימודים</a>
+    <a href="#audience">למי מתאים</a>
+    <a href="#faculty">סגל</a>
+    <a href="#faq">שאלות נפוצות</a>
+    <a href="#apply">להרשמה</a>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero" id="top">
+    <canvas id="neural" aria-hidden="true"></canvas>
+    <div class="container hero-inner">
+      <div>
+        <span class="eyebrow">תוכנית הכשרה מקצועית · מחזור 2027</span>
+        <h1>לבנות את הדור הבא של <em>מערכות AI</em></h1>
+        <p>קורס מעשי למפתחים שרוצים לעבור מ"שימוש ב-ChatGPT" לתכנון, בנייה והטמעה של מערכות בינה מלאכותית אמיתיות – מודלי שפה, סוכנים, RAG ו-MLOps – בליווי סגל אקדמי ומובילי תעשייה.</p>
+        <div class="hero-actions">
+          <a href="#apply" class="btn btn-primary">השאירו פרטים</a>
+          <a href="#curriculum" class="btn btn-ghost">לתוכנית הלימודים ←</a>
+        </div>
+      </div>
+      <div class="terminal" aria-label="דוגמת קוד">
+        <div class="terminal-dots" aria-hidden="true"><i></i><i></i><i></i></div>
+        <code id="typed"></code>
+      </div>
+    </div>
+  </section>
+
+  <div class="stats">
+    <div class="container stats-grid reveal">
+      <div class="stat"><strong>[XX]</strong><span>שעות אקדמיות</span></div>
+      <div class="stat"><strong>[X]</strong><span>חודשי לימוד</span></div>
+      <div class="stat"><strong>[X]</strong><span>פרויקטים מעשיים</span></div>
+      <div class="stat"><strong>תעודה</strong><span>מטעם האוניברסיטה</span></div>
+    </div>
+  </div>
+
+  <section id="why">
+    <div class="container">
+      <span class="eyebrow reveal">למה אצלנו</span>
+      <h2 class="reveal">עומק אקדמי. מהירות של תעשייה.</h2>
+      <p class="lead reveal">שילוב בין יסודות מתמטיים ומחקריים לבין כלים ופרקטיקות שמשמשים צוותי AI מובילים היום.</p>
+      <div class="why-grid">
+        <article class="card reveal" aria-labelledby="w1">
+          <div class="card-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg></div>
+          <h3 id="w1">סגל אקדמי מוביל</h3>
+          <p>מרצים וחוקרים מתחום מדעי המחשב והבינה המלאכותית, לצד מנטורים מהתעשייה.</p>
+        </article>
+        <article class="card reveal" aria-labelledby="w2">
+          <div class="card-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m16 18 6-6-6-6M8 6l-6 6 6 6"/></svg></div>
+          <h3 id="w2">Hands-on מהיום הראשון</h3>
+          <p>כל מפגש מסתיים בקוד שעובד. בונים, מריצים, מודדים ומשפרים.</p>
+        </article>
+        <article class="card reveal" aria-labelledby="w3">
+          <div class="card-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 12h8M12 8v8"/></svg></div>
+          <h3 id="w3">פרויקט גמר אמיתי</h3>
+          <p>מערכת AI מקצה לקצה לתיק העבודות – מהרעיון ועד פריסה בענן.</p>
+        </article>
+        <article class="card reveal" aria-labelledby="w4">
+          <div class="card-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.5 3.4-5.5 6.5-5.5s5.7 2 6.5 5.5"/><circle cx="17.5" cy="9" r="2.5"/><path d="M17 14.5c2.3.2 4 1.8 4.5 4.5"/></svg></div>
+          <h3 id="w4">קהילה ורשת קשרים</h3>
+          <p>מחזור קטן, עבודה בצוותים ומפגשים עם חברות וסטארטאפים בתחום.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="curriculum" id="curriculum">
+    <div class="container curr-layout">
+      <div class="curr-intro">
+        <span class="eyebrow reveal">תוכנית הלימודים</span>
+        <h2 class="reveal">מהיסודות ועד מערכת בייצור</h2>
+        <p class="lead reveal">שישה מודולים שבונים זה על זה. לחצו על מודול לפירוט הנושאים והכלים.</p>
+      </div>
+      <ol class="modules" id="modules">
+        <li class="module reveal" data-open="true">
+          <button aria-expanded="true" aria-controls="m1"><span class="module-num">01</span><span class="module-title">יסודות למידת מכונה<span class="module-weeks">שבועות 1–3</span></span><span class="module-chev" aria-hidden="true">⌄</span></button>
+          <div class="module-body" id="m1"><div><p>Python למדעי הנתונים, אלגברה וסטטיסטיקה שימושית, מודלים קלאסיים, הערכת מודלים ומניעת overfitting.</p><div class="tags"><span class="tag">Python</span><span class="tag">NumPy</span><span class="tag">pandas</span><span class="tag">scikit-learn</span></div></div></div>
+        </li>
+        <li class="module reveal" data-open="false">
+          <button aria-expanded="false" aria-controls="m2"><span class="module-num">02</span><span class="module-title">למידה עמוקה<span class="module-weeks">שבועות 4–6</span></span><span class="module-chev" aria-hidden="true">⌄</span></button>
+          <div class="module-body" id="m2"><div><p>רשתות נוירונים, אופטימיזציה, CNN, ארכיטקטורת Transformer ומנגנון Attention – מהתיאוריה למימוש.</p><div class="tags"><span class="tag">PyTorch</span><span class="tag">Transformers</span><span class="tag">GPU training</span></div></div></div>
+        </li>
+        <li class="module reveal" data-open="false">
+          <button aria-expanded="false" aria-controls="m3"><span class="module-num">03</span><span class="module-title">פיתוח עם מודלי שפה (LLMs)<span class="module-weeks">שבועות 7–9</span></span><span class="module-chev" aria-hidden="true">⌄</span></button>
+          <div class="module-body" id="m3"><div><p>עבודה עם APIs של מודלים מובילים, הנדסת פרומפטים, structured outputs, tool use, fine-tuning ובחירת מודל לפי עלות וביצועים.</p><div class="tags"><span class="tag">Claude API</span><span class="tag">OpenAI API</span><span class="tag">Hugging Face</span><span class="tag">LoRA</span></div></div></div>
+        </li>
+        <li class="module reveal" data-open="false">
+          <button aria-expanded="false" aria-controls="m4"><span class="module-num">04</span><span class="module-title">RAG וחיפוש סמנטי<span class="module-weeks">שבועות 10–11</span></span><span class="module-chev" aria-hidden="true">⌄</span></button>
+          <div class="module-body" id="m4"><div><p>Embeddings, מסדי נתונים וקטוריים, chunking, reranking והערכת איכות של מערכות שאחזור-ויצירה על מידע ארגוני.</p><div class="tags"><span class="tag">Embeddings</span><span class="tag">pgvector</span><span class="tag">Reranking</span><span class="tag">Evals</span></div></div></div>
+        </li>
+        <li class="module reveal" data-open="false">
+          <button aria-expanded="false" aria-controls="m5"><span class="module-num">05</span><span class="module-title">סוכני AI ואוטומציה<span class="module-weeks">שבועות 12–13</span></span><span class="module-chev" aria-hidden="true">⌄</span></button>
+          <div class="module-body" id="m5"><div><p>תכנון סוכנים, לולאות כלים, מערכות מרובות סוכנים, MCP, זיכרון, בטיחות ובקרה אנושית.</p><div class="tags"><span class="tag">Agents</span><span class="tag">MCP</span><span class="tag">Tool use</span><span class="tag">Guardrails</span></div></div></div>
+        </li>
+        <li class="module reveal" data-open="false">
+          <button aria-expanded="false" aria-controls="m6"><span class="module-num">06</span><span class="module-title">MLOps ופרויקט גמר<span class="module-weeks">שבועות 14–16</span></span><span class="module-chev" aria-hidden="true">⌄</span></button>
+          <div class="module-body" id="m6"><div><p>פריסה בענן, ניטור, ניהול עלויות ו-latency, CI/CD למודלים – ובניית פרויקט גמר מול צוות שופטים מהאקדמיה והתעשייה.</p><div class="tags"><span class="tag">Docker</span><span class="tag">FastAPI</span><span class="tag">Cloud</span><span class="tag">Monitoring</span></div></div></div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="audience">
+    <div class="container">
+      <span class="eyebrow reveal">למי מתאים</span>
+      <h2 class="reveal">הקורס בנוי בשבילכם אם…</h2>
+      <div class="aud-grid">
+        <div class="aud reveal"><span class="aud-check" aria-hidden="true">✓</span><div><h3>מפתחי תוכנה</h3><p>עם ניסיון בפיתוח, שרוצים להתמחות בבניית מוצרים מבוססי AI.</p></div></div>
+        <div class="aud reveal"><span class="aud-check" aria-hidden="true">✓</span><div><h3>בוגרי מדעי המחשב והנדסה</h3><p>שמבקשים להשלים ידע מעשי ועדכני לקראת תפקידי AI Engineer.</p></div></div>
+        <div class="aud reveal"><span class="aud-check" aria-hidden="true">✓</span><div><h3>אנשי דאטה</h3><p>אנליסטים ומדעני נתונים שרוצים להתקדם ל-LLMs, סוכנים ו-RAG.</p></div></div>
+        <div class="aud reveal"><span class="aud-check" aria-hidden="true">✓</span><div><h3>ראשי צוותים ו-CTOs</h3><p>שמובילים הטמעת AI בארגון וצריכים הבנה טכנית מעמיקה.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="details" id="details">
+    <div class="container">
+      <span class="eyebrow reveal">פרטי התוכנית</span>
+      <h2 class="reveal">כל מה שצריך לדעת</h2>
+      <p class="lead reveal">הפרטים הסופיים יפורסמו לקראת פתיחת המחזור.</p>
+      <dl class="details-grid">
+        <div class="detail reveal"><dt>// מועד פתיחה</dt><dd>[תאריך]<small>מחזור 2027</small></dd></div>
+        <div class="detail reveal"><dt>// מתכונת</dt><dd>[היברידי]<small>[ימים ושעות]</small></dd></div>
+        <div class="detail reveal"><dt>// מיקום</dt><dd>[קמפוס]<small>ירושלים / אונליין</small></dd></div>
+        <div class="detail reveal"><dt>// דרישות קדם</dt><dd>ניסיון בתכנות<small>רצוי Python</small></dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section id="faculty">
+    <div class="container">
+      <span class="eyebrow reveal">סגל ההוראה</span>
+      <h2 class="reveal">ילמדו אתכם</h2>
+      <div class="faculty-grid">
+        <div class="person reveal"><div class="avatar" aria-hidden="true">א</div><h3>[שם המרצה]</h3><p>[תפקיד ותחום התמחות]</p></div>
+        <div class="person reveal"><div class="avatar" aria-hidden="true">ב</div><h3>[שם המרצה]</h3><p>[תפקיד ותחום התמחות]</p></div>
+        <div class="person reveal"><div class="avatar" aria-hidden="true">ג</div><h3>[שם המרצה]</h3><p>[תפקיד ותחום התמחות]</p></div>
+        <div class="person reveal"><div class="avatar" aria-hidden="true">ד</div><h3>[שם המרצה]</h3><p>[תפקיד ותחום התמחות]</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="faq" id="faq">
+    <div class="container">
+      <div style="text-align:center">
+        <span class="eyebrow reveal">שאלות נפוצות</span>
+        <h2 class="reveal">שאלות? יש תשובות</h2>
+      </div>
+      <div class="faq-list">
+        <details class="reveal"><summary>האם צריך רקע במתמטיקה?</summary><p>מספיק רקע בסיסי. החלקים המתמטיים הנדרשים נלמדים בקורס בגישה שימושית וממוקדת.</p></details>
+        <details class="reveal"><summary>האם מקבלים תעודה?</summary><p>כן. בוגרים שעומדים בדרישות התוכנית ובפרויקט הגמר מקבלים תעודה מטעם האוניברסיטה.</p></details>
+        <details class="reveal"><summary>כמה זמן צריך להקדיש בשבוע?</summary><p>[X] שעות מפגשים בשבוע, ובנוסף כ-[X] שעות עבודה עצמית ותרגול.</p></details>
+        <details class="reveal"><summary>איך מתבצע תהליך הקבלה?</summary><p>השארת פרטים, שיחת היכרות עם רכז/ת התוכנית ומבחן התאמה קצר בתכנות.</p></details>
+        <details class="reveal"><summary>האם יש אפשרויות מימון או הנחות?</summary><p>[פרטים על מלגות, הנחות לבוגרי האוניברסיטה ופריסת תשלומים]</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="apply" id="apply">
+    <div class="container apply-layout">
+      <div>
+        <span class="eyebrow reveal">הרשמה</span>
+        <h2 class="reveal">מספר המקומות במחזור מוגבל</h2>
+        <p class="lead reveal">השאירו פרטים ורכז/ת התוכנית יחזרו אליכם לשיחת ייעוץ אישית – ללא התחייבות.</p>
+      </div>
+      <form id="leadForm" novalidate>
+        <div id="formFields" style="display:grid;gap:var(--space-4)">
+          <div class="field"><label for="name">שם מלא</label><input id="name" name="name" autocomplete="name" required aria-describedby="name-err"><span class="error" id="name-err" role="alert"></span></div>
+          <div class="field"><label for="phone">טלפון</label><input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" required aria-describedby="phone-err" dir="ltr" style="text-align:right"><span class="error" id="phone-err" role="alert"></span></div>
+          <div class="field"><label for="email">אימייל</label><input id="email" name="email" type="email" autocomplete="email" required aria-describedby="email-err" dir="ltr" style="text-align:right"><span class="error" id="email-err" role="alert"></span></div>
+          <div class="field"><label for="bg">רקע מקצועי</label>
+            <select id="bg" name="bg" required aria-describedby="bg-err">
+              <option value="">בחרו…</option><option>מפתח/ת תוכנה</option><option>סטודנט/ית או בוגר/ת</option><option>דאטה / אנליטיקה</option><option>ניהול טכנולוגי</option><option>אחר</option>
+            </select><span class="error" id="bg-err" role="alert"></span></div>
+          <label class="consent"><input type="checkbox" id="consent" required> אני מאשר/ת קבלת מידע על התוכנית ופנייה טלפונית.</label>
+          <span class="error" id="consent-err" role="alert"></span>
+          <button type="submit" class="btn btn-primary" id="submitBtn">שליחה</button>
+        </div>
+        <div class="form-success" id="formSuccess" role="status" aria-live="polite">
+          <strong>תודה! הפרטים התקבלו</strong>
+          <p>ניצור איתך קשר בימים הקרובים.</p>
+        </div>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container footer-inner">
+    <span>© 2026 קורס מפתחי AI · האוניברסיטה העברית בירושלים</span>
+    <span><a href="mailto:[email]">[אימייל ליצירת קשר]</a> · <a href="#">הצהרת נגישות</a> · <a href="#">מדיניות פרטיות</a></span>
+  </div>
+</footer>
+
+<script>
+(() => {
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Header + mobile menu
+  const header = document.getElementById('header');
+  const onScroll = () => header.classList.toggle('scrolled', window.scrollY > 40);
+  window.addEventListener('scroll', onScroll, {passive:true}); onScroll();
+  const toggle = document.getElementById('menuToggle');
+  const menu = document.getElementById('mobileMenu');
+  toggle.addEventListener('click', () => {
+    const open = menu.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', open);
+  });
+  menu.addEventListener('click', e => { if (e.target.tagName === 'A') { menu.classList.remove('open'); toggle.setAttribute('aria-expanded', false); } });
+
+  // Neural network canvas
+  const canvas = document.getElementById('neural');
+  const ctx = canvas.getContext('2d');
+  let nodes = [], w, h, dpr;
+  const resize = () => {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    w = canvas.offsetWidth; h = canvas.offsetHeight;
+    canvas.width = w * dpr; canvas.height = h * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const count = Math.round(Math.min(90, w * h / 16000));
+    nodes = Array.from({length: count}, () => ({x: Math.random()*w, y: Math.random()*h, vx: (Math.random()-.5)*.3, vy: (Math.random()-.5)*.3, r: Math.random()*1.6+.6}));
+  };
+  const draw = () => {
+    ctx.clearRect(0, 0, w, h);
+    for (let i = 0; i < nodes.length; i++) {
+      const a = nodes[i];
+      for (let j = i + 1; j < nodes.length; j++) {
+        const b = nodes[j], dx = a.x-b.x, dy = a.y-b.y, d = Math.hypot(dx, dy);
+        if (d < 130) { ctx.strokeStyle = `rgba(201,162,74,${(1-d/130)*.35})`; ctx.lineWidth = .7; ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke(); }
+      }
+      ctx.fillStyle = 'rgba(239,231,214,.8)'; ctx.beginPath(); ctx.arc(a.x, a.y, a.r, 0, Math.PI*2); ctx.fill();
+    }
+  };
+  const tick = () => {
+    nodes.forEach(n => { n.x += n.vx; n.y += n.vy; if (n.x<0||n.x>w) n.vx*=-1; if (n.y<0||n.y>h) n.vy*=-1; });
+    draw(); requestAnimationFrame(tick);
+  };
+  window.addEventListener('resize', resize);
+  resize();
+  if (reduced) draw(); else tick();
+
+  // Typed terminal
+  const code = [
+    ['c','# build your first agent\n'],
+    ['k','from'],['',' course '],['k','import'],['',' Agent, tools\n\n'],
+    ['','agent = Agent(\n  model='],['s','"your-llm"'],['',',\n  tools=[tools.search, tools.rag],\n)\n'],
+    ['','agent.run('],['s','"ענה על שאלות הסטודנטים"'],['',')\n']
+  ];
+  const typed = document.getElementById('typed');
+  const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+  const render = (n) => {
+    let left = n, html = '';
+    for (const [cls, txt] of code) {
+      if (left <= 0) break;
+      const part = txt.slice(0, left); left -= txt.length;
+      html += cls ?`<span class="${cls}">${esc(part)}</span>` : esc(part);
+    }
+    typed.innerHTML = html + '<span class="cursor"></span>';
+  };
+  const total = code.reduce((s, [,t]) => s + t.length, 0);
+  if (reduced) render(total);
+  else { let i = 0; const t = setInterval(() => { render(++i); if (i >= total) clearInterval(t); }, 35); }
+
+  // Curriculum accordion
+  document.querySelectorAll('.module button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const li = btn.closest('.module');
+      const open = li.dataset.open !== 'true';
+      li.dataset.open = open; btn.setAttribute('aria-expanded', open);
+    });
+  });
+
+  // Reveal on scroll
+  const io = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), {threshold: .12});
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // Lead form
+  const form = document.getElementById('leadForm');
+  const rules = {
+    name: v => v.trim().length >= 2 || 'נא להזין שם מלא',
+    phone: v => /^0\d{1,2}-?\d{7}$/.test(v.replace(/\s/g,'')) || 'נא להזין מספר טלפון תקין',
+    email: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) || 'נא להזין כתובת אימייל תקינה',
+    bg: v => !!v || 'נא לבחור רקע מקצועי'
+  };
+  const validate = id => {
+    const el = document.getElementById(id), res = rules[id](el.value);
+    el.closest('.field').dataset.invalid = res !== true;
+    document.getElementById(id + '-err').textContent = res === true ? '' : res;
+    return res === true;
+  };
+  Object.keys(rules).forEach(id => {
+    const el = document.getElementById(id);
+    el.addEventListener('blur', () => { el.dataset.touched = '1'; validate(id); });
+    el.addEventListener('input', () => { if (el.dataset.touched) validate(id); });
+  });
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    const ok = Object.keys(rules).map(validate).every(Boolean);
+    const consent = document.getElementById('consent').checked;
+    document.getElementById('consent-err').textContent = consent ? '' : 'נא לאשר כדי להמשיך';
+    if (!ok || !consent) return;
+    const btn = document.getElementById('submitBtn');
+    btn.setAttribute('aria-busy', 'true'); btn.textContent = 'שולח…';
+    // TODO: replace with a real endpoint (CRM / form service)
+    await new Promise(r => setTimeout(r, 900));
+    document.getElementById('formFields').style.display = 'none';
+    document.getElementById('formSuccess').classList.add('show');
+  });
+})();
+</script>
+</body>
+</html>

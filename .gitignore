@@ -1,0 +1,7 @@
+# Obsidian local state
+.obsidian/workspace*.json
+.obsidian/cache
+.trash/
+
+# Obsidian plugins (obsidian-local-rest-api data.json contains an API key)
+.obsidian/plugins/
