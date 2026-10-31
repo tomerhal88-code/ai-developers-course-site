@@ -41,4 +41,5 @@ There is no build step, package manager, linter or test suite. Open `index.html`
 3. **Security:** after testing, run the `security-review` skill.
 4. **Commit:** finish every action that changes something with a git commit.
 5. **Document in Obsidian:** at the end of the run, record every update in the notes in `פרויקטים/אתר קורס מפתחי AI/`. Tick tasks in `משימות פתוחות.md` and append a dated line to its `## יומן` log.
-6. **Every new branch gets its own Obsidian note:** `ענף <branch>.md` in the same folder, covering its goal, what changed, tests and status. Link it from `סקירת הפרויקט.md`. The notes are tracked in git, so commit note updates on `master` and merge `master` into the other branches. Otherwise the note disappears when you switch branches.
+6. **Every new branch gets its own Obsidian note:** `ענף <branch>.md` in the same folder, covering its goal, what changed, tests and status. Link it from `סקירת הפרויקט.md`. The notes are tracked in git, so commit note updates on `main` and merge `main` into the other branches.
+7. **Branch model:** `main` is the production branch and `dev` is the integration branch. Feature branches (e.g. `agents.run`) branch off `dev` and are merged into `main` once tests and `security-review` pass. Otherwise the note disappears when you switch branches.
